@@ -8,6 +8,10 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
+
+
+ATL-TLACHONI V1
+
 """
 import dj_database_url
 from pathlib import Path
@@ -59,7 +63,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "cea-api-production.up.railway.app"]
 # Application definition
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "myapps.authentication.authenticate.CustomJWTAuthentication",
+        "user.authenticate.CustomJWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
@@ -86,18 +90,11 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
     "corsheaders",
-    "myapps.authentication",
-    "myapps.perfil",
-    "myapps.administrador",
-    "myapps.catalogos",
-    "myapps.sistema",
-    "myapps.crm",
-    "myapps.examenes",
-    "myapps.maestros",
-    "myapps.estudiantes",
-    "myapps.control_escolar",
-    "invitaPro",
-    "myapps.plataforma"
+    "user",
+    "common",
+    "catalogos",
+    "sistema",
+    "crm",
 ]
 
 MIDDLEWARE = [
@@ -153,22 +150,22 @@ LOGGING = {
 
 
 WSGI_APPLICATION = "school_admin.wsgi.application"
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.mysql",
-#         "NAME": "cea_db",
-#         "USER": "root",
-#         "PASSWORD": "",
-#         "HOST": "localhost",
-#         "PORT": "3306",
-#     }
-# }
 DATABASES = {
-    'default': dj_database_url.config(
-        conn_max_age=600,
-        ssl_require=not DEBUG  # en Render/producción suele convenir True
-    )
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "thales_api",
+        "USER": "admin",
+        "PASSWORD": "@dm1n2026",
+        "HOST": "localhost",
+        "PORT": "3306",
+    }
 }
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         conn_max_age=600,
+#         ssl_require=not DEBUG  # en Render/producción suele convenir True
+#     )
+# }
 # DATABASES = {
 #     'default': dj_database_url.config(
 #         default='postgresql://postgres:sYOgaFtlLchAPGiipdhEYxKFDolRBFul@postgres.railway.internal:5432/railway',
@@ -250,12 +247,15 @@ CORS_ALLOWED_ORIGINS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-AUTH_USER_MODEL = "authentication.UserCustomize"
+AUTH_USER_MODEL = "user.UserCustomize"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'  # o os.path.join(BASE_DIR, 'media')
 # https://psicotest.app/ligapsicometria/26852_72050
 
-
+# Para admin de Django
+AUTHENTICATION_BACKENDS = [
+    'user.backends.RolePermissionBackend',
+]
 
 # utils
 

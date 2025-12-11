@@ -1,1 +1,0 @@
-from .genericos import RetriveTipoProducto

@@ -1,2 +1,0 @@
-from .comunidad import ComentarioSerializer
-from .enlaces import EnlaceSerializer, PlataformaImparticionSerializer

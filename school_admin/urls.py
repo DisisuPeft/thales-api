@@ -18,19 +18,5 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
-    # path('register', auth_views.register, name='register'),
-    path('api/', include('myapps.authentication.urls')),
-    path('api/', include('myapps.sistema.urls')),
-    path('api/', include('myapps.perfil.urls')),
-    # path('api/', include('myapps.cursos.urls')),
-    path('api/', include('myapps.administrador.urls')),
-    path('api/', include('myapps.catalogos.urls')),
-    path('api/', include('myapps.crm.urls')),
-    path('api/', include('myapps.estudiantes.urls')),
-    path('api/', include('myapps.maestros.urls')),
-    path('api/', include('myapps.control_escolar.urls')),
-    path('api/', include('myapps.plataforma.urls')),
-    path('api/', include('invitaPro.urls'))
-    # path('perfil', perfil_views.getprofile, name='perfil'),
+    path('api/', include('user.urls')),
 ]
