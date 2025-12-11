@@ -28,8 +28,6 @@ class ProgramaEducativo(Base):
     costo_inscripcion = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     costo_mensualidad = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     costo_documentacion = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    # inscripcion = models.ManyToManyField(Estudiante, related_name="program", null=True, blank=True)
-    activo = models.IntegerField()
     instructor = models.ManyToManyField("user.UserCustomize", related_name="programas", null=True, blank=True)
     modalidad = models.ForeignKey(ModalidadesPrograma, on_delete=models.CASCADE, related_name="programas", null=True, blank=True)
     imagen_url = models.CharField(max_length=255, null=True, blank=True)
