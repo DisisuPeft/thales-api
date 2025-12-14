@@ -8,7 +8,7 @@ class Examenes(Base, SoftDeleteModel, OwnerBaseModel):
     tipo_examen = models.ForeignKey("control_escolar.TiposExamen", on_delete=models.CASCADE, related_name="examen")
     fecha = models.DateField()
 
-class Calificaciones(Base, SoftDeleteModel, OwnerBaseModel):
+class CalificacionExamen(Base, SoftDeleteModel, OwnerBaseModel):
     estudiante = models.ForeignKey("user.UserCustomize", on_delete=models.CASCADE, related_name="estudiante_examen_calificacion")
     examen = models.ForeignKey(Examenes, on_delete=models.CASCADE, related_name="estudiante_calificacion", null=True, blank=True)
     calificacion = models.DecimalField(max_digits=5, decimal_places=2)

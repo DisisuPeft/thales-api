@@ -11,3 +11,7 @@ def get_formatted_short_date():
         format='SHORT_DATE_FORMAT',
         use_l10n=True
     )
+
+
+def get_date():
+    return timezone.now().date()

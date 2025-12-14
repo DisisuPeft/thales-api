@@ -11,7 +11,7 @@ from django.utils import timezone
 # modelo base para registros
 class SoftDeleteModel(models.Model):
     deleted_at = models.DateTimeField(null=True, blank=True)
-    deleted_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='deleted_%(class)s')
+    deleted_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='%(app_label)s_%(class)s_deleted_by')
 
     def delete(self, using=None, keep_parents=False, user=None):
         self.deleted_at = timezone.now()
@@ -30,9 +30,9 @@ class SoftDeleteModel(models.Model):
         abstract = True
 
 class OwnerBaseModel(models.Model):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='%(class)s_owner', null=True, blank=True)
-    edited_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='%(class)s_edited_by')
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='%(class)s_created_by')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='%(app_label)s_%(class)s_owner', null=True, blank=True)
+    edited_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='%(app_label)s_%(class)s_edited_by')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='%(app_label)s_%(class)s_created_by')
     class Meta:
         abstract = True
 
@@ -202,15 +202,18 @@ class BaseFileEntity(Base):
 
 
 class BaseAcademico(Base):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='%(class)s_user', null=True, blank=True)
-    nivel_educativo = models.ForeignKey('catalogos.NivelEducativo', on_delete=models.CASCADE, related_name='%(class)s_nivel', null=True, blank=True)
-    institucion = models.ForeignKey('catalogos.Institucion', on_delete=models.CASCADE, related_name='%(class)s_institucion', null=True, blank=True)
-    estado_pais = models.ForeignKey("catalogos.EstadoPais", on_delete=models.CASCADE, related_name="%(class)s_estado_pais", null=True, blank=True)
-    ciudad = models.ForeignKey("catalogos.Ciudad", on_delete=models.CASCADE, related_name="%(class)s_ciudad", null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='%(app_label)s_%(class)s_user', null=True, blank=True)
+    nivel_educativo = models.ForeignKey('catalogos.NivelEducativo', on_delete=models.CASCADE, related_name='%(app_label)s_%(class)s_nivel', null=True, blank=True)
+    institucion = models.ForeignKey('catalogos.Institucion', on_delete=models.CASCADE, related_name='%(app_label)s_%(class)s_institucion', null=True, blank=True)
+    estado_pais = models.ForeignKey("catalogos.EstadoPais", on_delete=models.CASCADE, related_name="%(app_label)s_%(class)s_estado_pais", null=True, blank=True)
+    ciudad = models.ForeignKey("catalogos.Ciudad", on_delete=models.CASCADE, related_name="%(app_label)s_%(class)s_ciudad", null=True, blank=True)
 
     class Meta:
         abstract = True
         
 class BaseCRM(Base, SoftDeleteModel):
-    empresa = models.ForeignKey('sistema.Empresa', on_delete=models.CASCADE, related_name='%(class)s_empresa', null=True, blank=True)
-    instituto = models.ForeignKey('catalogos.Instituto', on_delete=models.CASCADE, related_name='%(class)s_instituto', null=True, blank=True)
+    empresa = models.ForeignKey('sistema.Empresa', on_delete=models.CASCADE, related_name='%(app_label)s_%(class)s_empresa', null=True, blank=True)
+    instituto = models.ForeignKey('catalogos.Institucion', on_delete=models.CASCADE, related_name='%(app_label)s_%(class)s_instituto', null=True, blank=True)
+
+    class Meta:
+        abstract = True

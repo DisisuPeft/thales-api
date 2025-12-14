@@ -90,9 +90,10 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
     "corsheaders",
-    "user",
-    "common",
     "catalogos",
+    "user",
+    "control_escolar",
+    "common",
     "sistema",
     "crm",
 ]

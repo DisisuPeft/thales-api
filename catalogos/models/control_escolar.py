@@ -21,7 +21,7 @@ class Institucion(Base):
     nombre = models.CharField(max_length=150)
     descripcion = models.TextField(blank=True, null=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
-    logo = models.ImageField(upload_to="instituciones/logos/", blank=True, null=True)
+    logo = models.CharField(max_length=255, blank=True, null=True)
     sitio_web = models.URLField(blank=True, null=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)
     email_contacto = models.EmailField(blank=True, null=True)
