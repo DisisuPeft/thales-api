@@ -25,6 +25,21 @@ class UserCustomize(AbstractUser, Base):
 
     objects = CustomUserManager()
 
+    def pestanias_accesibles(self):
+        from sistema.models import Pestania
+        from django.db.models import Prefetch
+
+        if self.is_superuser:
+            return Pestania.objects.filter(status=1).select_related("modulo")
+        mis_permisos = self.get_all_permissions()
+        pestanias = Pestania.objects.filter(status=1).select_related("modulo").prefetch_related("permission__content_type")
+        resultado = []
+        for p in pestanias:
+            perms_req = {f"{pm.content_type.app_label}.{pm.condename}" for pm in p.permission.all()}
+            if not perms_req or (perms_req & mis_permisos):
+                resultado.append(p)
+        return resultado
+
     def __str__(self):
         return self.email
 

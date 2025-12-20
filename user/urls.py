@@ -12,5 +12,5 @@ urlpatterns = [
     path("auth/refresh/", CustomTokenRefreshView.as_view()),
     path("auth/verify/", CustomTokenVerifyView.as_view()),
     path("logout/", LogoutView.as_view()),
-    path('auth/me/', ProfileView.as_view()),
+    path('user/me/', ProfileView.as_view()),
 ]
