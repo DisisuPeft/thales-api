@@ -1,7 +1,7 @@
 from django.db import models
 from common.models import Base
 from django.contrib.auth.models import Permission
-
+import uuid
 # Create your models here.
 
 
@@ -46,6 +46,7 @@ class Modulo(Base):
     textColor = models.CharField(max_length=20, null=True, blank=True)
     href = models.CharField(max_length=50, null=True, blank=True)
     orden = models.IntegerField(blank=True, null=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     
     class Meta:
         ordering = ['orden']
@@ -58,6 +59,7 @@ class Pestania(Base):
     icon_path = models.CharField(max_length=50, null=True, blank=True)
     orden = models.IntegerField(null=True, blank=True)
     permission = models.ManyToManyField(Permission, related_name="pestanias", blank=True) 
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     class Meta:
         ordering = ['orden']

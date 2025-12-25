@@ -1,4 +1,5 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
+from django.core.exceptions import PermissionDenied
 
 class EsAutorORolPermitido(BasePermission):
     def __init__(self, roles_permitidos=None):
@@ -7,9 +8,13 @@ class EsAutorORolPermitido(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True
+
+        if request.user.is_superuser:
+            return True
+
         user = request.user
-        is_autor = obj.usuario_id == user.id
-        has_role = user.roleID.filter(name__in=self.roles_permitidos).exists()
+        is_autor = obj.owner_id == user.id
+        has_role = user.roles.filter(name__in=self.roles_permitidos).exists()
         return is_autor or has_role
     
 def EsAutorORolPermitidoConRoles(roles_permitidos):
@@ -30,6 +35,10 @@ class HasRole(BasePermission):
 
     def has_access(self, request, view):
         user = request.user
+        
+        if user.is_superuser:
+            return True
+        
         if not user or not user.is_authenticated:
             raise PermissionDenied("El usuario no está autenticado.")
         

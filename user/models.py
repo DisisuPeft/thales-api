@@ -25,21 +25,44 @@ class UserCustomize(AbstractUser, Base):
 
     objects = CustomUserManager()
 
-    def pestanias_accesibles(self):
+    def modulos_accesibles(self):
         from sistema.models import Pestania
-        from django.db.models import Prefetch
+        from collections import defaultdict
 
         if self.is_superuser:
-            return Pestania.objects.filter(status=1).select_related("modulo")
-        mis_permisos = self.get_all_permissions()
-        pestanias = Pestania.objects.filter(status=1).select_related("modulo").prefetch_related("permission__content_type")
-        resultado = []
-        for p in pestanias:
-            perms_req = {f"{pm.content_type.app_label}.{pm.condename}" for pm in p.permission.all()}
-            if not perms_req or (perms_req & mis_permisos):
-                resultado.append(p)
-        return resultado
+            pestanias = Pestania.objects.filter(status=1).select_related("modulo").order_by("modulo__orden", "orden")
+        else:
+            mis_permisos = self.get_all_permissions()
+            pestanias = Pestania.objects.filter(status=1).select_related("modulo").prefetch_related("permission__content_type").order_by("modulo__orden", "orden")
+            resultado = []
+            for p in pestanias:
+                perms_req = {f"{pm.content_type.app_label}.{pm.codename}" for pm in p.permission.all()}
+                if not perms_req or (perms_req & mis_permisos):
+                    resultado.append(p)
+            pestanias = resultado
+        
+        # Agrupar por módulo
+        modulos_dict = {pestania.modulo.id: pestania.modulo for pestania in pestanias}
+        return list(modulos_dict.values())
 
+
+
+    def pestanias_accesibles(self, modulo_uuid):
+        from sistema.models import Pestania
+
+        if self.is_superuser:
+            pestanias = Pestania.objects.filter(status=1).filter(modulo__uuid=modulo_uuid).select_related("modulo").order_by("modulo__orden", "orden")
+        else:
+            mis_permisos = self.get_all_permissions()
+            pestanias = Pestania.objects.filter(status=1).filter(modulo__uuid=modulo_uuid).select_related("modulo").prefetch_related("permission__content_type").order_by("modulo__orden", "orden")
+            resultado = []
+            for p in pestanias:
+                perms_req = {f"{pm.content_type.app_label}.{pm.codename}" for pm in p.permission.all()}
+                if not perms_req or (perms_req & mis_permisos):
+                    resultado.append(p)
+            pestanias = resultado
+        return pestanias
+        
     def __str__(self):
         return self.email
 
@@ -67,6 +90,7 @@ class Role(Base):
     nombre = models.CharField(max_length=100, unique=True)
     permission = models.ManyToManyField(Permission)
     nivel_acceso = models.IntegerField(null=True, blank=True)
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     
 # class EstudianteUser(UserCustomize):
 #     matricula = models.CharField(max_length=100, null=True, blank=True, unique=True)
